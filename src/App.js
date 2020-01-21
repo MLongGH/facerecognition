@@ -32,7 +32,7 @@ const particlesOptions = {
   }
 }
 
-const initialState={
+const initialState = {
   input: '',
   imageUrl: '',
   box: {},
@@ -110,21 +110,22 @@ class App extends Component {
     app.models
         .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
         .then(response => {
-          if(response){
-            fetch('http://localhost:3030/image',{
+          if (response) {
+            fetch('http://localhost:3030/image', {
               method: 'put',
               headers: {'content-Type': 'application/json'},
               body: JSON.stringify({
                 id: this.state.user.id
+              })
             })
-          })
-                .then(response=>response.json())
+                .then(response => response.json())
                 .then(count => {
                   this.setState(Object.assign(this.state.user, {entries: count}))
-                });
-
+                })
+                .catch(console.log)
+          }
           this.displayFaceBox(this.calculateFaceLocation(response))
-        }})
+        })
         .catch(err => console.log(err));
   };
 
@@ -134,7 +135,7 @@ class App extends Component {
     } else if (route === 'home') {
       this.setState({isSignedIn: true});
       this.setState({route: route});
-    }else {
+    } else {
       this.setState({route: route});
     }
   };
