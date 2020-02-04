@@ -104,8 +104,10 @@ class App extends Component {
 
   onPictureSubmit = () => {
     this.setState({imageUrl: this.state.input});
+    const API_URL = process.env.NODE_ENV === 'production'?
+        process.env.REACT_APP_API_URL_PROD : process.env.REACT_APP_API_URL_DEV;
 
-    fetch('https://pacific-fjord-17840.herokuapp.com/imageurl', {
+    fetch(`${API_URL}/imageurl`, {
       method: 'post',
       headers: {'content-Type': 'application/json'},
       body: JSON.stringify({
@@ -114,7 +116,7 @@ class App extends Component {
     }).then(response => response.json())
       .then(response => {
         if (response) {
-          fetch('https://pacific-fjord-17840.herokuapp.com/image', {
+          fetch(`${API_URL}/image`, {
             method: 'put',
             headers: {'content-Type': 'application/json'},
             body: JSON.stringify({
