@@ -104,8 +104,6 @@ class App extends Component {
 
   onPictureSubmit = () => {
     this.setState({imageUrl: this.state.input});
-    // const API_URL = process.env.NODE_ENV === 'production'?
-    //     process.env.REACT_APP_API_URL_PROD : process.env.REACT_APP_API_URL_DEV;
 
     fetch('https://pacific-fjord-17840.herokuapp.com/imageurl', {
       method: 'post',
