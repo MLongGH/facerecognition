@@ -19,8 +19,6 @@ class Signin extends React.Component {
   };
 
   onSubmitSignIn = () => {
-    console.log(process.env);
-    
     fetch('https://pacific-fjord-17840.herokuapp.com/signin', {
       method: 'post',
       headers: {'content-Type': 'application/json'},
