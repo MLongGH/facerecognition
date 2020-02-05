@@ -32,7 +32,7 @@ const particlesOptions = {
 const initialState = {
   input: '',
   imageUrl: '',
-  box: {},
+  boxes: [],
   route: 'signin',
   isSignedIn: false,
   user: {
@@ -50,7 +50,7 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
-      box: {},
+      boxes: [],
       route: 'signin',
       isSignedIn: false,
       user: {
@@ -81,21 +81,25 @@ class App extends Component {
     })
   };
 
-  calculateFaceLocation = (data) => {
-    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById('inputimage');
-    const width = Number(image.width);
-    const height = Number(image.height);
-    return {
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - (clarifaiFace.right_col * width),
-      bottomRow: height - (clarifaiFace.bottom_row * height)
-    }
+  calculateFaceLocations = (data) => {
+    return data.outputs[0].data.regions.map(face => {
+      const clarifaiFace = face.region_info.bounding_box;
+      const image = document.getElementById('inputimage');
+      const width = Number(image.width);
+      const height = Number(image.height);
+      return {
+        id:face.id,
+        leftCol: clarifaiFace.left_col * width,
+        topRow: clarifaiFace.top_row * height,
+        rightCol: width - (clarifaiFace.right_col * width),
+        bottomRow: height - (clarifaiFace.bottom_row * height)
+      }
+    })
+
   };
 
-  displayFaceBox = (box) => {
-    this.setState({box: box});
+  displayFaceBoxes = (boxes) => {
+    this.setState({boxes: boxes});
   };
 
   onInputChange = (event) => {
@@ -105,30 +109,30 @@ class App extends Component {
   onPictureSubmit = () => {
     this.setState({imageUrl: this.state.input});
 
-    fetch('https://pacific-fjord-17840.herokuapp.com/imageurl', {
+    fetch('http://localhost:3030/imageurl', {
       method: 'post',
       headers: {'content-Type': 'application/json'},
       body: JSON.stringify({
         input: this.state.input
       })
     }).then(response => response.json())
-      .then(response => {
-        if (response) {
-          fetch('https://pacific-fjord-17840.herokuapp.com/image', {
-            method: 'put',
-            headers: {'content-Type': 'application/json'},
-            body: JSON.stringify({
-              id: this.state.user.id
-            })
-          })
-              .then(count => count.json())
-              .then(count => {
-                this.setState(Object.assign(this.state.user, {entries: count}))
+        .then(response => {
+          if (response) {
+            fetch('http://localhost:3030/image', {
+              method: 'put',
+              headers: {'content-Type': 'application/json'},
+              body: JSON.stringify({
+                id: this.state.user.id
               })
-              .catch(console.log)
-        }
-        this.displayFaceBox(this.calculateFaceLocation(response))
-      })
+            })
+                .then(count => count.json())
+                .then(count => {
+                  this.setState(Object.assign(this.state.user, {entries: count}))
+                })
+                .catch(console.log)
+          }
+          this.displayFaceBoxes(this.calculateFaceLocations(response))
+        })
         .catch(err => console.log(err));
   };
 
@@ -144,7 +148,7 @@ class App extends Component {
   };
 
   render() {
-    const {isSignedIn, imageUrl, route, box, user} = this.state;
+    const {isSignedIn, imageUrl, route, boxes, user} = this.state;
     return (
         <div className="App">
           <Particles className='particles'
@@ -159,7 +163,7 @@ class App extends Component {
                     onInputChange={this.onInputChange}
                     onPictureSubmit={this.onPictureSubmit}
                 />
-                <FaceRecognition box={box} imageUrl={imageUrl}/>
+                <FaceRecognition boxes={boxes} imageUrl={imageUrl}/>
               </div>
               : (route === 'signin'
                   ? <Signin onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
