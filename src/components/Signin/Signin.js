@@ -1,4 +1,5 @@
 import React from 'react';
+import './Signin.css';
 
 class Signin extends React.Component {
 
@@ -19,7 +20,7 @@ class Signin extends React.Component {
   };
 
   onSubmitSignIn = () => {
-    fetch('http://localhost:3030/signin', {
+    fetch('http://localhost:3001/signin', {
       method: 'post',
       headers: {'content-Type': 'application/json'},
       body: JSON.stringify({
@@ -46,7 +47,7 @@ class Signin extends React.Component {
                 <legend className="f1 fw6 ph0 mh0">Sign In</legend>
                 <div className="mt3">
                   <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                  <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                  <input className="hover-black pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                          type="email"
                          name="email-address"
                          id="email-address"
@@ -55,7 +56,7 @@ class Signin extends React.Component {
                 </div>
                 <div className="mv3">
                   <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                  <input className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                  <input className="hover-black b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                          type="password"
                          name="password"
                          id="password"
