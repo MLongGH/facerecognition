@@ -28,13 +28,19 @@ class Profile extends React.Component {
   };
 
   onProfileUpdate = (data) => {
+    const token = window.sessionStorage.getItem('token');
     fetch(`http://localhost:3001/profile/${this.props.user.id}`, {
       method: 'post',
-      headers: {'content-Type': 'application/json'},
+      headers: {
+        'content-Type': 'application/json',
+        'Authorization': token
+      },
       body: JSON.stringify({formInput: data})
     }).then(resp => {
-      this.props.toggleModal();
-      this.props.loadUser({...this.props.user, ...data});
+      if(resp.status === 200 || resp.status === 304){
+        this.props.toggleModal();
+        this.props.loadUser({...this.props.user, ...data});
+      }
     }).catch(console.log)
   }
 
