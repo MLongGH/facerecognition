@@ -64,7 +64,7 @@ class App extends Component {
   componentDidMount () {
     const token = window.sessionStorage.getItem('token');
     if(token) {
-      fetch('http://localhost:3001/signin', {
+      fetch('https://damp-dusk-57532.herokuapp.com/signin', {
         method: 'post',
         headers: {
           'content-Type': 'application/json',
@@ -74,7 +74,7 @@ class App extends Component {
           .then(resp => resp.json())
           .then(data => {
             if(data && data.id){
-              fetch(`http://localhost:3001/profile/${data.id}`, {
+              fetch(`https://damp-dusk-57532.herokuapp.com/profile/${data.id}`, {
                 method: 'get',
                 headers: {
                   'content-Type': 'application/json',
@@ -142,7 +142,7 @@ class App extends Component {
     const token = window.sessionStorage.getItem('token');
     this.setState({imageUrl: this.state.input});
 
-    fetch('http://localhost:3001/imageurl', {
+    fetch('https://damp-dusk-57532.herokuapp.com/imageurl', {
       method: 'post',
       headers: {
         'content-Type': 'application/json',
@@ -153,7 +153,7 @@ class App extends Component {
     }).then(response => response.json())
         .then(response => {
           if (response) {
-            fetch('http://localhost:3001/image', {
+            fetch('https://damp-dusk-57532.herokuapp.com/image', {
               method: 'put',
               headers: {
                 'content-Type': 'application/json',
@@ -176,6 +176,7 @@ class App extends Component {
   onRouteChange = (route) => {
     if (route === 'signout') {
       this.setState(initialState)
+      window.sessionStorage.removeItem('token');
     } else if (route === 'home') {
       this.setState({isSignedIn: true});
       this.setState({route: route});
